@@ -31,6 +31,15 @@ int insetionsort(int *v){
     print(v);
 }
 
+void merge(int *v, int comeco, int fim){
+    if(comeco < fim){
+        meio = floor((comeco+fim)/2);
+        merge(v,comeco, meio);
+        merge(v,meio + 1, fim);
+        mergesort()
+    }
+}
+
 
 int main()
 {

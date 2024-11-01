@@ -114,6 +114,55 @@ void PosOrdem_Arvore(ArvBin* raiz){
     }
 }
 
+struct No* remove_atual(struct No* atual){
+    struct No *no1, *no2;
+    if(atual->esquerda == NULL){
+        no2 = atual->direita;
+        free(atual);
+        return no2;
+    }
+    no1 = atual;
+    no2 = atual->esquerda;
+    while(no2->direita != NULL){
+        no1 = no2;
+        no2 = no2->direita;
+    }
+    no2->direita = atual->direita;
+    free(atual);
+    return no2;
+}
+
+int remove_ArvBin(ArvBin* raiz, int valor){
+    if(raiz == NULL){
+        return 0;
+    }
+    struct No* ant = NULL;
+    struct No* atual = *raiz;
+    
+    while(atual != NULL){
+        if(valor == atual->valor){
+            if(atual == *raiz){
+                *raiz = remove_atual(atual);
+            }else {
+                if(ant->direita == atual){
+                    ant->direita = remove_atual(atual);
+                }else{
+                    ant->esquerda == remove_atual(atual);
+                }
+                
+            }        
+        }
+        
+        ant = atual;
+        if(valor>atual->valor){
+            atual = atual->direita;
+        }else{
+            atual = atual->esquerda;
+        }
+    }
+    return 0;
+}
+
 int main()
 {
    ArvBin* raiz = cria_ArvBin();
@@ -123,9 +172,9 @@ int main()
    }
    printf("\n Pré-Ordem:\n");
    preOrdem_Arvore(raiz);
-   printf("\n Ordem:\n");
-   EmOrdem_Arvore(raiz);
-   printf("\n pOS-oRDEM: \n");
-   PosOrdem_Arvore(raiz);
+   remove_ArvBin(raiz, 20);
+   
+   printf("\n Pré-Ordem:\n");
+   preOrdem_Arvore(raiz);
     return 0;
 }

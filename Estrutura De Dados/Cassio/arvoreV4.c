@@ -196,6 +196,7 @@ int remove_ArvBin(ArvBin* raiz, int valor){
                     ant->esq = remove_atual(atual);
                 }
             }
+          return 1;
         }
         
         ant  = atual;

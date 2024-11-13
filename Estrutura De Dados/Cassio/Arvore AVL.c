@@ -88,7 +88,7 @@ void preOrdem_ArvAVL(ArvAVL *raiz){
     if(*raiz != NULL){
         //printf("%d\n",(*raiz)->info);
         //printf("No %d: %d\n",(*raiz)->info,fatorBalanceamento_NO(*raiz));
-        printf("No %d: %d\n",(*raiz)->info,altura_NO(*raiz));
+        printf("No %d: H(%d) fb(%d)\n",(*raiz)->info,altura_NO(*raiz),fatorBalanceamento_NO(*raiz));
         preOrdem_ArvAVL(&((*raiz)->esq));
         preOrdem_ArvAVL(&((*raiz)->dir));
     }
@@ -111,7 +111,7 @@ void posOrdem_ArvAVL(ArvAVL *raiz){
     if(*raiz != NULL){
         posOrdem_ArvAVL(&((*raiz)->esq));
         posOrdem_ArvAVL(&((*raiz)->dir));
-        printf("%d\n",(*raiz)->info);
+        printf("No %d: H(%d) fb(%d)\n",(*raiz)->info,altura_NO(*raiz),fatorBalanceamento_NO(*raiz));
     }
 }
 
@@ -144,7 +144,7 @@ struct NO* procuraMenor(struct NO* atual){
 
 //=================================
 
-void RotacaoLL(ArvAvl* A){
+void RotacaoLL(ArvAVL * A){
     printf("Rotação LL\n");
     struct NO* B;
     B = (*A)->esq;
@@ -155,8 +155,8 @@ void RotacaoLL(ArvAvl* A){
     (*A) = B;
 }
 
-void RotacaoLL(ArvAvl* A){
-    printf("Rotação LL\n");
+void RotacaoRR(ArvAVL * A){
+    printf("Rotação RR\n");
     struct NO* B;
     B = (*A)->dir;
     (*A)->dir = B->esq;
@@ -168,12 +168,12 @@ void RotacaoLL(ArvAvl* A){
 
 void RotacaoLR(ArvAVL *A){
     RotacaoRR(&(*A)->esq);
-    RotacaoLL(A)
+    RotacaoLL(A);
 }
 
 void RotacaoRL(ArvAVL *A){
     RotacaoRR(&(*A)->dir);
-    RotacaoLL(A)
+    RotacaoLL(A);
 }
 
 int insere_ArvBina(ArvAVL *raiz, int valor){
@@ -193,7 +193,7 @@ int insere_ArvBina(ArvAVL *raiz, int valor){
     }
     struct NO *atual = *raiz;
     if(valor < atual->info){
-        if((res = insere_ArvBina(&(atual->esq), valor) == 1){
+        if((res = insere_ArvBina(&(atual->esq), valor) == 1)){
             if(fatorBalanceamento_NO(atual) >= 2){
                 if(valor < (*raiz)->esq->info){
                     RotacaoLL(raiz);
@@ -204,7 +204,7 @@ int insere_ArvBina(ArvAVL *raiz, int valor){
             }
         }
     }else if (valor > atual->info){
-        if((res = insere_ArvBina(&(atual->dir), valor) == 1){
+        if((res = insere_ArvBina(&(atual->dir), valor) == 1)){
             if(fatorBalanceamento_NO(atual) >= 2){
                 if(valor > (*raiz)->dir->info){
                     RotacaoRR(raiz);
@@ -215,23 +215,30 @@ int insere_ArvBina(ArvAVL *raiz, int valor){
             }
         }
     }
+    else{
+        printf("Valor Duplicado!!!!\a");
+        return 0; 
+    }
+    
+    atual->altura = maior(altura_NO(atual->esq), altura_NO(atual->dir))+1;
+    return res;
 }
 
 int main(void) {
 
-  ArvAVL* raiz = ArvAVL();
+  ArvAVL* raiz = cria_ArvAVL();
   int N = 8,dados[8] = {50,100,30,20,40,45,35,37};
   for(int i=0;i<N;i++){
-    //insere_ArvBina(raiz, dados[i]);
+    insere_ArvBina(raiz, dados[i]);
   }
 
   //libera_ArvAVL(raiz);
   int altura = altura_ArvAVL(raiz);
   printf("\nAltura: %d ",altura);
-  int quantidade = totalNosArvAVL(raiz);
-  printf("\nQuantidade: %d ",quantidade);
+  //int quantidade = totalNosArvAVL(raiz);
+  //printf("\nQuantidade: %d ",quantidade);
 
-  printf("\nPréOrdem:");
+  printf("\nPréOrdem:\n");
   preOrdem_ArvAVL(raiz);
   printf("\nEmOrdem:");
   emOrdem_ArvAVL(raiz);
